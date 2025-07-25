@@ -19,7 +19,7 @@ This repository provides the official implementation of: *[LLM Embedded Swin-UMa
 
 <!-- Insert a pipeline of your algorithm here if got one -->
 <div align="center">
-    <a href="https://"><img width="1000px" height="auto" src="https://github.com/ruida/LLM-Swin-UMamba/tree/main/assets/architecture.png"></a>
+    <a href="https://"><img width="1000px" height="auto" src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/architecture.png"></a>
 </div>
 
 Recent rapid developments in Large Language Models (LLMs) bring the potential to integrating LLM into medical image segmentation. Our previous studies have applied universal lesion detection to the DeepLesion dataset, achieving state-of-the-art accuracy in lesion detection and short form report prediction tasks with CNN architectures. In this study, we investigate the feasibility of integrating the LLM model into the Swin-UMamba architecture to segment lesions using the DeepLesion dataset. We combine the DeepLesion short form report finding with the ULS23 DeepLesion dataset to conduct the lesion segmentation task. We achieved relatively high segmentation performance with a Dice score of 81.76% in the testing phase.  We also compare segmentation performance with a few LLM-driven medical image segmentation models. The proposed LLM-Swin-UMamba model outperforms the other models in mean Dice Score.  In this work, we demonstrate the feasibility of integrating LLM into the DeepLesion segmentation task. 
