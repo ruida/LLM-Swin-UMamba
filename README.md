@@ -37,7 +37,7 @@ Recent rapid developments in Large Language Models (LLMs) bring the potential to
 <img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice.png" width="50%" />
 
 - Dice score distribution
-<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice_voilin.png" width="50%" />
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice_violin.png" width="50%" />
 
 - Qualitative Comparison
 <img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_result.png" width="50%" />
