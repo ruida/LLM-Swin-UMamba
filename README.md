@@ -12,8 +12,10 @@ This repository provides the official implementation of: *[LLM Embedded Swin-UMa
 ## Links
 
 - [Paper](https://arxiv.org/abs/2402.03302)
-- [Model](https://drive.google.com/drive/folders/1zOt0ZfQPjoPdY37NfLKevYs4x5eClThN?usp=sharing)
-- [Code](https://github.com/JiarunLiu/Swin-UMamba)
+- [Model](https://drive.google.com/file/d/1DtKjVy6ulU2G5c4vLACd6KcWoD6Mx0-V/view?usp=drive_link)
+- [Data](https://drive.google.com/drive/folders/1q118BodTfQ3-eVC6ESdPfDdZkDlgvxME?usp=drive_link)
+- [Code](https://github.com/ruida/LLM-Swin-UMamba)
+- [Results](https://github.com/ruida/LLM-Swin-UMamba/blob/main/results.zip)
 
 ## Details
 
@@ -28,19 +30,21 @@ Recent rapid developments in Large Language Models (LLMs) bring the potential to
 
 **Main Results**
 
-- AbdomenMRI
-<img src="https://github.com/JiarunLiu/Swin-UMamba/blob/main/assets/abdomenmr.png" width="50%" />
+- Training and validation phase comparison
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/train_dice.png" width="50%" />
 
-- Endoscopy
-<img src="https://github.com/JiarunLiu/Swin-UMamba/blob/main/assets/endoscopy.png" width="50%" />
+- Testing phase compasion
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice.png" width="50%" />
 
-- Microscopy
-<img src="https://github.com/JiarunLiu/Swin-UMamba/blob/main/assets/microscopy.png" width="50%" />
+- Dice score distribution
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice_voilin.png" width="50%" />
 
+- Qualitative Comparison
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_result.png" width="50%" />
 
 ## Dataset Links
 
-All three datasets can be downloaded from [U-Mamba](https://github.com/bowang-lab/U-Mamba).
+All three datasets can be downloaded from [LLM-Swin-UMamba](https://drive.google.com/drive/folders/1q118BodTfQ3-eVC6ESdPfDdZkDlgvxME?usp=drive_link).
 
 ## Get Started
 
