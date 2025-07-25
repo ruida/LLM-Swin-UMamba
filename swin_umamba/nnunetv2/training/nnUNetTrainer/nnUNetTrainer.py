@@ -1178,7 +1178,7 @@ class nnUNetTrainer(object):
                 self.print_to_log_file(f"predicting {k}")
                 data, seg, properties = dataset_val.load_case(k)
                 report_text = [properties['report_text']]  # Wrap in list to match batch formatprint("report_text = " + report_text)
-                # print("report_text = " + str(report_text))
+                print("ruida me report_text = " + str(report_text))
 
                 if self.is_cascaded:
                     data = np.vstack((data, convert_labelmap_to_one_hot(seg[-1], self.label_manager.foreground_labels,

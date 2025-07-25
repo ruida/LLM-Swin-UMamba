@@ -147,7 +147,9 @@ class DefaultPreprocessor(object):
         # print('dtypes', data.dtype, seg.dtype)
         # === Add report text to properties ===
         case_id = os.path.basename(image_files[0]).replace("_0000.png", "").replace(".png", "")
-        report_path = os.path.join("/data/ruida/segmentation/Swin-UMamba/data/nnUNet_raw/Dataset716_DeepLesion/reports/", f"{case_id}.json")
+        print("case_id = " + str(case_id))
+        #  report_path = os.path.join("/data/ruida/segmentation/Swin-UMamba/data/nnUNet_raw/Dataset716_DeepLesion/reports/", f"{case_id}.json")
+        report_path = os.path.join("/data/ruida/segmentation/Swin-UMamba/data/nnUNet_raw/Dataset717_DeepLesion_test/reports/", f"{case_id}.json")
         print("report_path = " + report_path)
         if os.path.exists(report_path):
             with open(report_path, "r") as f:

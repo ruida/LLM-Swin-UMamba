@@ -33,7 +33,7 @@ from nnunetv2.utilities.json_export import recursive_fix_for_json_export
 from nnunetv2.utilities.label_handling.label_handling import determine_num_input_channels
 from nnunetv2.utilities.plans_handling.plans_handler import PlansManager, ConfigurationManager
 from nnunetv2.utilities.utils import create_lists_from_splitted_dataset_folder
-
+import json, os
 
 class nnUNetPredictor(object):
     def __init__(self,
@@ -160,6 +160,8 @@ class nnUNetPredictor(object):
                                                                                        self.dataset_json['file_ending'])
         print(f'There are {len(list_of_lists_or_source_folder)} cases in the source folder')
         list_of_lists_or_source_folder = list_of_lists_or_source_folder[part_id::num_parts]
+        print("self.dataset_json['file_ending'] = " + self.dataset_json['file_ending'])
+        # print("list_of_lists_or_source_folder = " + str(list_of_lists_or_source_folder))
         caseids = [os.path.basename(i[0])[:-(len(self.dataset_json['file_ending']) + 5)] for i in
                    list_of_lists_or_source_folder]
         print(
@@ -340,8 +342,11 @@ class nnUNetPredictor(object):
         with multiprocessing.get_context("spawn").Pool(num_processes_segmentation_export) as export_pool:
             worker_list = [i for i in export_pool._pool]
             r = []
+            report_text = ""
+            # print("data_iterator = " + str(data_iterator))
             for preprocessed in data_iterator:
                 data = preprocessed['data']
+                # print("data = " + str(data))
                 if isinstance(data, str):
                     delfile = data
                     data = torch.from_numpy(np.load(data))
@@ -349,13 +354,26 @@ class nnUNetPredictor(object):
 
                 ofile = preprocessed['ofile']
                 if ofile is not None:
+                    print(f'\nPredicting {ofile}:')
                     print(f'\nPredicting {os.path.basename(ofile)}:')
+                    report_path  = "/data/ruida/segmentation/Swin-UMamba/data/nnUNet_raw/Dataset717_DeepLesion_test/reports/" + os.path.basename(ofile) + ".json"
+                    if os.path.exists(report_path):
+                         with open(report_path, "r") as f:
+                             report_json = json.load(f)
+                         report_text = report_json.get("report", "")
+                    else:
+                         report_text = ""
+                    print("report_text = " + report_text)
+
                 else:
                     print(f'\nPredicting image of shape {data.shape}:')
 
                 print(f'perform_everything_on_device: {self.perform_everything_on_device}')
 
                 properties = preprocessed['data_properties']
+                properties["report_text"] = report_text
+
+                print("properties = " + str(properties))
 
                 # let's not get into a runaway situation where the GPU predicts so fast that the disk has to b swamped with
                 # npy files
@@ -365,7 +383,7 @@ class nnUNetPredictor(object):
                     sleep(0.1)
                     proceed = not check_workers_alive_and_busy(export_pool, worker_list, r, allowed_num_queued=2)
 
-                prediction = self.predict_logits_from_preprocessed_data(data).cpu()
+                prediction = self.predict_logits_from_preprocessed_data(data, report_text).cpu() # ruida
 
                 if ofile is not None:
                     # this needs to go into background processes
@@ -446,7 +464,7 @@ class nnUNetPredictor(object):
             else:
                 return ret
 
-    def predict_logits_from_preprocessed_data(self, data: torch.Tensor) -> torch.Tensor:
+    def predict_logits_from_preprocessed_data(self, data: torch.Tensor, report_text: str = None) -> torch.Tensor:
         """
         IMPORTANT! IF YOU ARE RUNNING THE CASCADE, THE SEGMENTATION FROM THE PREVIOUS STAGE MUST ALREADY BE STACKED ON
         TOP OF THE IMAGE AS ONE-HOT REPRESENTATION! SEE PreprocessAdapter ON HOW THIS SHOULD BE DONE!
@@ -471,9 +489,9 @@ class nnUNetPredictor(object):
                 # second iteration to crash due to OOM. Grabbing tha twith try except cause way more bloated code than
                 # this actually saves computation time
                 if prediction is None:
-                    prediction = self.predict_sliding_window_return_logits(data).to('cpu')
+                    prediction = self.predict_sliding_window_return_logits(data, report_text).to('cpu')
                 else:
-                    prediction += self.predict_sliding_window_return_logits(data).to('cpu')
+                    prediction += self.predict_sliding_window_return_logits(data, report_text).to('cpu')
 
             if len(self.list_of_parameters) > 1:
                 prediction /= len(self.list_of_parameters)
@@ -520,6 +538,7 @@ class nnUNetPredictor(object):
     def _internal_maybe_mirror_and_predict(self, x: torch.Tensor, report_text: Optional[str] = None) -> torch.Tensor:
         mirror_axes = self.allowed_mirroring_axes if self.use_mirroring else None
         # prediction = self.network(x)
+        print("ruida report_text = " + str(report_text))
         prediction = self.network(x, report_text)
 
         if mirror_axes is not None:
@@ -591,7 +610,7 @@ class nnUNetPredictor(object):
         self.network.eval()
 
         empty_cache(self.device)
-
+        print("predict_sliding_window_return_logits: report_text = " + str(report_text))
         # Autocast is a little bitch.
         # If the device_type is 'cpu' then it's slow as heck on some CPUs (no auto bfloat16 support detection)
         # and needs to be disabled.
