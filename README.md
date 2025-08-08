@@ -21,7 +21,7 @@ This repository provides the official implementation of: *[Text Embedded Swin-UM
 
 <!-- Insert a pipeline of your algorithm here if got one -->
 <div align="center">
-    <a href="https://"><img width="1000px" height="auto" src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/architecture.tiff"></a>
+    <a href="https://"><img width="1000px" height="auto" src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/architecture.png"></a>
 </div>
 
 Segmentation of lesions on CT enables automatic measurement for clinical assessment of chronic diseases (e.g.,
@@ -45,10 +45,11 @@ models by 1.74% and 0.22%, respectively.
 <img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice.png" width="50%" />
 
 - Dice score distribution
-<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice_violin.tiff" width="50%" />
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice_violin.png" width="50%" />
 
 - Qualitative Comparison
-<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_result.png" width="50%" />
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_result1.png" width="50%" />
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_result2.png" width="50%" />
 
 ## Dataset Links
 
