@@ -1,17 +1,17 @@
-# [LLM Embedded Swin-UMamba for DeepLesion Segmentation](https://arxiv.org/abs/2402.03302)
+# [Text Embedded Swin-UMamba for DeepLesion Segmentation](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_abstract.pdf)
 
 ## Key Features
 
-This repository provides the official implementation of: *[LLM Embedded Swin-UMamba for DeepLesion Segmentation](https://arxiv.org/abs/2402.03302)*
+This repository provides the official implementation of: *[Text Embedded Swin-UMamba for DeepLesion Segmentation](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_abstract.pdf)*
 
-- Integrate LLM text embedding into the Swin-UMamba decoding path, enable text encoding in nnUNet.
+- Integrate text embedding into the Swin-UMamba decoding path, enable text encoding in nnUNet and its derivatives.
 - Curated the image, label, report paired dataset from ULS23 DeepLesion and the original DeepLesion datasets.
-- Compared with a few medical imaging segmentation models, LLM-Swin-UMamba surpassed the other modes with notable margin in Dice score.
+- Compared with a few medical imaging segmentation models, Text-Swin-UMamba surpassed the other modes with notable margin in Dice score.
 - We open the implementation and dataset for replication.  
 
 ## Links
 
-- [Paper](https://arxiv.org/abs/2402.03302)
+- [Paper](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_abstract.pdf)
 - [Model](https://drive.google.com/file/d/1DtKjVy6ulU2G5c4vLACd6KcWoD6Mx0-V/view?usp=drive_link)
 - [Data](https://drive.google.com/drive/folders/1q118BodTfQ3-eVC6ESdPfDdZkDlgvxME?usp=drive_link)
 - [Code](https://github.com/ruida/LLM-Swin-UMamba)
@@ -21,10 +21,18 @@ This repository provides the official implementation of: *[LLM Embedded Swin-UMa
 
 <!-- Insert a pipeline of your algorithm here if got one -->
 <div align="center">
-    <a href="https://"><img width="1000px" height="auto" src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/architecture.png"></a>
+    <a href="https://"><img width="1000px" height="auto" src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/architecture.tiff"></a>
 </div>
 
-Recent rapid developments in Large Language Models (LLMs) bring the potential to integrating LLM into medical image segmentation. Our previous studies have applied universal lesion detection to the DeepLesion dataset, achieving state-of-the-art accuracy in lesion detection and short form report prediction tasks with CNN architectures. In this study, we investigate the feasibility of integrating the LLM model into the Swin-UMamba architecture to segment lesions using the DeepLesion dataset. We combine the DeepLesion short form report finding with the ULS23 DeepLesion dataset to conduct the lesion segmentation task. We achieved relatively high segmentation performance with a Dice score of 81.76% in the testing phase.  We also compare segmentation performance with a few LLM-driven medical image segmentation models. The proposed LLM-Swin-UMamba model outperforms the other models in mean Dice Score.  In this work, we demonstrate the feasibility of integrating LLM into the DeepLesion segmentation task. 
+Segmentation of lesions on CT enables automatic measurement for clinical assessment of chronic diseases (e.g.,
+lymphoma). Integrating large language models (LLMs) into the lesion segmentation workflow offers the potential to
+combine imaging features with descriptions of lesion characteristics from the radiology reports. In this study, we
+investigate the feasibility of integrating text into the Swin-UMamba architecture for the task of lesion segmentation. The
+publicly available ULS23 DeepLesion dataset was used along with short-form descriptions of the findings from the reports.
+On the test dataset, a high Dice Score of 82 ± 18% and low Hausdorff distance of 6.58 ± 10.64 (pixels) was obtained for
+lesion segmentation. The proposed Text-Swin-UMamba model outperformed prior approaches: 37% improvement over
+the LLM-driven LanGuideMedSeg model (p < 0.001), and surpassed the purely image-based xLSTM-UNet and nnUNet
+models by 1.74% and 0.22%, respectively.
 
 
 
@@ -37,7 +45,7 @@ Recent rapid developments in Large Language Models (LLMs) bring the potential to
 <img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice.png" width="50%" />
 
 - Dice score distribution
-<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice_violin.png" width="50%" />
+<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice_violin.tiff" width="50%" />
 
 - Qualitative Comparison
 <img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_result.png" width="50%" />
