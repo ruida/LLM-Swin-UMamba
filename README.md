@@ -1,8 +1,8 @@
-# [Text Embedded Swin-UMamba for DeepLesion Segmentation](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_abstract.pdf)
+# [Text Embedded Swin-UMamba for DeepLesion Segmentation](https://arxiv.org/abs/2508.06453)
 
 ## Key Features
 
-This repository provides the official implementation of: *[Text Embedded Swin-UMamba for DeepLesion Segmentation](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_abstract.pdf)*
+This repository provides the official implementation of: *[Text Embedded Swin-UMamba for DeepLesion Segmentation](https://arxiv.org/abs/2508.06453)*
 
 - Integrate text embedding into the Swin-UMamba decoding path, enable text encoding in nnUNet and its derivatives.
 - Curated the image, label, report paired dataset from ULS23 DeepLesion and the original DeepLesion datasets.
