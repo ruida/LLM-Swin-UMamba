@@ -139,9 +139,9 @@ cd "/data/ruida/segmentation/Swin-UMamba" \
 
 You can download our model checkpoints [here](https://drive.google.com/file/d/1DtKjVy6ulU2G5c4vLACd6KcWoD6Mx0-V/view?usp=drive_link).
 
-'''shell
+```shell
 nnUNetv2_predict -i ./data/nnUNet_raw/DeepLesion_test/imagesTs -o ./data/nnUNet_raw/DeepLesion_test/prediction -d 710 -tr nnUNetTrainerSwinUMamba -c 2d -f all
-'''
+```
 
 ## 🙋‍♀️ Feedback and Contact
 
