@@ -74,13 +74,22 @@ conda create -n swin_umamba python=3.10
 conda activate swin_umamba
 
 # install requirements
-pip install torch==2.0.1 torchvision==0.15.2
-pip install causal-conv1d==1.1.1
-pip install mamba-ssm
-pip install torchinfo timm numba
+# Step 1: PyTorch w/ CUDA 11.8
+conda install -y -c pytorch -c nvidia pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8
 
-# install swin_umamba
-git clone https://github.com/JiarunLiu/Swin-UMamba
+# Step 2: core libs required by Swin-UMamba
+pip install causal-conv1d==1.1.1 mamba-ssm==2.2.2 timm==1.0.11 einops==0.8.0 torchinfo==1.8.0
+
+# Step 3: medical imaging + IO stack
+pip install monai==1.3.0 nibabel==5.3.2 simpleitk==2.4.0 pydicom==3.0.1 scikit-image==0.24.0 opencv-python==4.10.0.84 imageio==2.36.1 tifffile==2024.9.20 matplotlib==3.9.3 seaborn==0.13.2 pandas==2.2.3 numpy==1.26.4
+
+# Step 4: nnUNetv2 + helpers 
+pip install nnunetv2==2.1.1 dynamic-network-architectures==0.3.1 acvl-utils==0.2.2 batchgenerators==0.25.1 connected-components-3d==3.21.0
+
+# Step 5: general utilities
+pip install scikit-learn==1.5.2 numba==0.60.0 numexpr==2.10.2 yacs==0.1.8 hiddenlayer==0.3 tqdm==4.67.1 regex==2024.11.6 fsspec==2024.10.0
+
+# Step 6: install the project
 cd Swin-UMamba/swin_umamba
 pip install -e .
 ```
@@ -96,39 +105,47 @@ mv vssmtiny_dp01_ckpt_epoch_292.pth data/pretrained/vmamba/vmamba_tiny_e292.pth
 
 **Preprocess**
 
-We use the same data & processing strategy following U-Mamba. Download dataset from [U-Mamba](https://github.com/bowang-lab/U-Mamba) and put them into the data folder. Then preprocess the dataset with following command:
+We use the same data & processing strategy following U-Mamba. Download dataset from [U-Mamba](https://drive.google.com/drive/folders/1q118BodTfQ3-eVC6ESdPfDdZkDlgvxME?usp=drive_link) and put them into the data folder. Then preprocess the dataset with following command:
 
 ```shell
 nnUNetv2_plan_and_preprocess -d DATASET_ID --verify_dataset_integrity
+nnUNetv2_plan_and_preprocess -d 710 --verify_dataset_integrity
+
+(swin_umamba) [me@cn0817 Dataset710_DeepLesion]$ pwd
+./Swin-UMamba/data/nnUNet_raw/Dataset710_DeepLesion
+
+(swin_umamba) [me@cn0817 Dataset710_DeepLesion]$ ls
+imagesTr labelsTr reports dataset.json 
 ```
 
 
-**Training & Testing**
+**Training & Testing **
 
-Using the following command to train & test Swin-UMamba
+Using the following command to train & test LLM-Swin-UMamba
 
 ```shell
-# AbdomenMR dataset
-bash scripts/train_AbdomenMR.sh MODEL_NAME
-# Endoscopy dataset
-bash scripts/train_Endoscopy.sh MODEL_NAME
-# Microscopy dataset 
-bash scripts/train_Microscopy.sh MODEL_NAME
+conda activate swin_umamba
+
+ml CUDA/11.8
+ml gcc/9.2.0
+
+export nnUNet_raw="/data/ruida/segmentation/Swin-UMamba/data/nnUNet_raw"
+export nnUNet_preprocessed="/data/ruida/segmentation/Swin-UMamba/data/nnUNet_preprocessed"
+export nnUNet_results="/data/ruida/segmentation/Swin-UMamba/data/nnUNet_results"
+
+cd "/data/ruida/segmentation/Swin-UMamba" \
+&& nnUNetv2_train 710 2d all -tr nnUNetTrainerSwinUMamba --c 2>&1| tee ${PWD##*/}_train_710.log
 ```
 
-Here  `MODEL_NAME` can be:
+You can download our model checkpoints [here](https://drive.google.com/file/d/1DtKjVy6ulU2G5c4vLACd6KcWoD6Mx0-V/view?usp=drive_link).
 
-- `nnUNetTrainerSwinUMamba`: Swin-UMamba model with ImageNet pretraining
-- `nnUNetTrainerSwinUMambaD`: Swin-UMamba$\dagger$  model with ImageNet pretraining
-- `nnUNetTrainerSwinUMambaScratch`: Swin-UMamba model without ImageNet pretraining
-- `nnUNetTrainerSwinUMambaDScratch`: Swin-UMamba$\dagger$  model without ImageNet pretraining
-
-You can download our model checkpoints [here](https://drive.google.com/drive/folders/1zOt0ZfQPjoPdY37NfLKevYs4x5eClThN?usp=sharing).
-
+'''shell
+nnUNetv2_predict -i ./data/nnUNet_raw/DeepLesion_test/imagesTs -o ./data/nnUNet_raw/DeepLesion_test/prediction -d 710 -tr nnUNetTrainerSwinUMamba -c 2d -f all
+'''
 
 ## 🙋‍♀️ Feedback and Contact
 
-For further questions, please feel free to contact [Jiarun Liu](jr.liu@siat.ac.cn)
+For further questions, please feel free to contact [Ruida](ruida@nih.gov)
 
 
 ## 🛡️ License
@@ -145,10 +162,10 @@ Our code is based on [nnU-Net](https://github.com/MIC-DKFZ/nnUNet), [Mamba](http
 
 If you find this repository useful, please consider citing this paper:
 ```
-@article{Swin-UMamba,
-    title={Swin-UMamba: Mamba-based UNet with ImageNet-based pretraining},
-    author={Jiarun Liu and Hao Yang and Hong-Yu Zhou and Yan Xi and Lequan Yu and Yizhou Yu and Yong Liang and Guangming Shi and Shaoting Zhang and Hairong Zheng and Shanshan Wang},
-    journal={arXiv preprint arXiv:2402.03302},
-    year={2024}
+@article{
+    title={Text Embedded Swin-UMamba for DeepLesion Segmentation},
+    author={Ruida Cheng, Tejas Mathai, Pritam Mukherjee, Benjamin Hou, Qingqing Zhu, Zhiyong Lu, Matthew McAuliffe, Ronald M. Summers},
+    journal={arXiv preprint arXiv:2508.06453},
+    year={2025}
 }
 ```
