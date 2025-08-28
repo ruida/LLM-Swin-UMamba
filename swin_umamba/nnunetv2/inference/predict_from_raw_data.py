@@ -611,7 +611,6 @@ class nnUNetPredictor(object):
 
         empty_cache(self.device)
         print("predict_sliding_window_return_logits: report_text = " + str(report_text))
-        # Autocast is a little bitch.
         # If the device_type is 'cpu' then it's slow as heck on some CPUs (no auto bfloat16 support detection)
         # and needs to be disabled.
         # If the device_type is 'mps' then it will complain that mps is not implemented, even if enabled=False
