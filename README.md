@@ -6,7 +6,7 @@ This repository provides the official implementation of: *[Text Embedded Swin-UM
 
 - Integrate text embedding into the Swin-UMamba decoding path, enable text encoding in nnUNet and its derivatives.
 - Curated the image, label, report paired dataset from ULS23 DeepLesion and the original DeepLesion datasets.
-- Compared with a few medical imaging segmentation models, Text-Swin-UMamba surpassed the other modes with notable margin in Dice score.
+- Compared with a few medical imaging segmentation models, Text-Swin-UMamba surpassed the other models with notable margin in Dice score.
 - We open the implementation and dataset for replication.  
 
 ## Links
