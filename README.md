@@ -74,22 +74,22 @@ conda create -n swin_umamba python=3.10
 conda activate swin_umamba
 
 # install requirements
-# Step 1: PyTorch w/ CUDA 11.8
-conda install -y -c pytorch -c nvidia pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8
+# Step 1: PyTorch w/ CUDA 12.1
+conda install pytorch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 pytorch-cuda=12.1 -c pytorch -c nvidia
 
 # Step 2: core libs required by Swin-UMamba
-pip install causal-conv1d==1.1.1 mamba-ssm==2.2.2 timm==1.0.11 einops==0.8.0 torchinfo==1.8.0
+pip install causal-conv1d==1.1.1
 
-# Step 3: medical imaging + IO stack
-pip install monai==1.3.0 nibabel==5.3.2 simpleitk==2.4.0 pydicom==3.0.1 scikit-image==0.24.0 opencv-python==4.10.0.84 imageio==2.36.1 tifffile==2024.9.20 matplotlib==3.9.3 seaborn==0.13.2 pandas==2.2.3 numpy==1.26.4
+pip install  markdown>=2.6.8
 
-# Step 4: nnUNetv2 + helpers 
-pip install nnunetv2==2.1.1 dynamic-network-architectures==0.3.1 acvl-utils==0.2.2 batchgenerators==0.25.1 connected-components-3d==3.21.0
+pip install protobuf!=4.24.0,>=3.19.6
 
-# Step 5: general utilities
-pip install scikit-learn==1.5.2 numba==0.60.0 numexpr==2.10.2 yacs==0.1.8 hiddenlayer==0.3 tqdm==4.67.1 regex==2024.11.6 fsspec==2024.10.0
+pip install mamba-ssm==2.2.2
 
-# Step 6: install the project
+pip install numpy==1.26.4
+
+pip install opencv-python==4.10.0.84
+
 cd Swin-UMamba/swin_umamba
 pip install -e .
 ```
