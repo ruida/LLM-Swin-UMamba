@@ -57,21 +57,11 @@ All three datasets can be downloaded from [LLM-Swin-UMamba](https://drive.google
 
 ## Get Started
 
-**Main Requirements**  
-> torch==2.0.1  
-> torchvision==0.15.2  
-> causal-conv1d==1.1.1  
-> mamba-ssm  
-> torchinfo   
-> timm  
-> numba  
-
-
 **Installation**
 ```shell
 # create a new conda env
-conda create -n swin_umamba python=3.10
-conda activate swin_umamba
+conda create -n llm-swin_umamba python=3.10
+conda activate llm-swin_umamba
 
 # install requirements
 # Step 1: PyTorch w/ CUDA 12.1
