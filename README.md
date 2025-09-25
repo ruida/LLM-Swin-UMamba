@@ -65,6 +65,8 @@ conda activate llm-swin_umamba
 
 # install requirements
 # Step 1: PyTorch w/ CUDA 12.1
+
+ml CUDA/12.1
 conda install pytorch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 pytorch-cuda=12.1 -c pytorch -c nvidia
 
 # Step 2: core libs required by Swin-UMamba
@@ -79,6 +81,10 @@ pip install mamba-ssm==2.2.2
 pip install numpy==1.26.4
 
 pip install opencv-python==4.10.0.84
+
+pip install transformers==4.41.2
+
+pip install torchinfo timm numba
 
 cd swin_umamba
 pip install -e .
@@ -117,7 +123,7 @@ Using the following command to train & test LLM-Swin-UMamba
 ```shell
 conda activate swin_umamba
 
-ml CUDA/11.8
+ml CUDA/12.1
 ml gcc/9.2.0
 
 export nnUNet_raw="/data/ruida/segmentation/Swin-UMamba/data/nnUNet_raw"
