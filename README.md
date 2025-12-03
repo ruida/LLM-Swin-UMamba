@@ -12,7 +12,7 @@ This repository provides the official implementation of: *[Text Embedded Swin-UM
 ## Links
 
 - [Paper](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_paper.pdf)
-- [Model](https://drive.google.com/file/d/1DtKjVy6ulU2G5c4vLACd6KcWoD6Mx0-V/view?usp=drive_link)
+- [Model](https://drive.google.com/file/d/1yVOBxinfubdTuXkQR3Pa8R6O6ppQYCAV/view?usp=drive_link)
 - [Data](https://drive.google.com/drive/folders/1q118BodTfQ3-eVC6ESdPfDdZkDlgvxME?usp=drive_link)
 - [Code](https://github.com/ruida/LLM-Swin-UMamba)
 - [Results](https://github.com/ruida/LLM-Swin-UMamba/blob/main/results.zip)
