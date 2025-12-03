@@ -2,7 +2,7 @@
 
 ## Key Features
 
-This repository provides the official implementation of: *[Text Embedded Swin-UMamba for DeepLesion Segmentation](https://arxiv.org/abs/2508.06453)*
+This repository provides the official implementation of: *[Text Embedded Swin-UMamba for DeepLesion Segmentation](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_paper.pdf)*
 
 - Integrate text embedding into the Swin-UMamba decoding path, enable text encoding in nnUNet and its derivatives.
 - Curated the image, label, report paired dataset from ULS23 DeepLesion and the original DeepLesion datasets.
@@ -11,7 +11,7 @@ This repository provides the official implementation of: *[Text Embedded Swin-UM
 
 ## Links
 
-- [Paper](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_abstract.pdf)
+- [Paper](https://github.com/ruida/LLM-Swin-UMamba/blob/main/SPIE_paper.pdf)
 - [Model](https://drive.google.com/file/d/1DtKjVy6ulU2G5c4vLACd6KcWoD6Mx0-V/view?usp=drive_link)
 - [Data](https://drive.google.com/drive/folders/1q118BodTfQ3-eVC6ESdPfDdZkDlgvxME?usp=drive_link)
 - [Code](https://github.com/ruida/LLM-Swin-UMamba)
@@ -29,17 +29,14 @@ lymphoma). Integrating large language models (LLMs) into the lesion segmentation
 combine imaging features with descriptions of lesion characteristics from the radiology reports. In this study, we
 investigate the feasibility of integrating text into the Swin-UMamba architecture for the task of lesion segmentation. The
 publicly available ULS23 DeepLesion dataset was used along with short-form descriptions of the findings from the reports.
-On the test dataset, a high Dice Score of 82 ± 18% and low Hausdorff distance of 6.58 ± 10.64 (pixels) was obtained for
-lesion segmentation. The proposed Text-Swin-UMamba model outperformed prior approaches: 37% improvement over
+On the test dataset, a high Dice Score of 82.64 ± 17.36 % and low Hausdorff distance of 6.34 ± 10.48 (pixels) was obtained for
+lesion segmentation. The proposed Text-Swin-UMamba model outperformed prior approaches: 37.79 % improvement over
 the LLM-driven LanGuideMedSeg model (p < 0.001), and surpassed the purely image-based xLSTM-UNet and nnUNet
-models by 1.74% and 0.22%, respectively.
+models by 2.58 % and 1.01 %, respectively.
 
 
 
 **Main Results**
-
-- Training and validation phase comparison
-<img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/train_dice.png" width="50%" />
 
 - Testing phase compasion
 <img src="https://github.com/ruida/LLM-Swin-UMamba/blob/main/assets/test_dice.png" width="50%" />

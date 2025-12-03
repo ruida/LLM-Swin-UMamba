@@ -339,22 +339,6 @@ class VSSLayer(nn.Module):
             )
             for i in range(depth)])
 
-        # fuse before downsampling
-        self.fusion = PWAM(dim,  # both the visual input and for combining, num of channels
-                           dim,  # v_in
-                           768,  # l_in
-                           dim,  # key
-                           dim,  # value
-                           num_heads=num_heads_fusion,
-                           dropout=fusion_drop)
-        
-        self.res_gate = nn.Sequential(
-            nn.Linear(dim, dim, bias=False),
-            nn.ReLU(),
-            nn.Linear(dim, dim, bias=False),
-            nn.Tanh()
-        )
-
         if True: # is this really applied? Yes, but been overriden later in VSSM!
             def _init_weights(module: nn.Module):
                 for name, p in module.named_parameters():
@@ -633,13 +617,14 @@ class SwinUMamba(nn.Module):
             nn.Linear(768, feat_size[2]),  # for dec2
             nn.Linear(768, feat_size[3]),  # for dec3
             nn.Linear(768, feat_size[4]),  # for dec4
+            nn.Linear(768, self.hidden_size),  # for enc_hidden (bottleneck)
         ])
 
 
     def forward(self, x_in, report_text):
 
          # Encode text to lang_feat: shape (B, 768)
-        lang_feat = self.text_encoder(report_text)
+        lang_feat = self.text_encoder(report_text, pooling = "mean")
         
         x1 = self.stem(x_in)
         vss_outs = self.vssm_encoder(x1)
@@ -650,6 +635,8 @@ class SwinUMamba(nn.Module):
         enc5 = self.encoder5(vss_outs[3])
 
         enc_hidden = vss_outs[4]
+        # Injecting lang feature at the all level of the image decoder. Adding then lang feature to the bottleneck layer. 
+        # enc_hidden = enc_hidden + self.lang_proj[5](lang_feat).unsqueeze(-1).unsqueeze(-1).expand_as(enc_hidden)
 
         dec4 = self.decoder6(enc_hidden, enc5)
         dec4 = dec4 + self.lang_proj[4](lang_feat).unsqueeze(-1).unsqueeze(-1).expand_as(dec4)
@@ -741,116 +728,3 @@ def get_swin_umamba_from_plans(
         model = load_pretrained_ckpt(model)
 
     return model
-
-
-
-class PWAM(nn.Module):
-    def __init__(self, dim, v_in_channels, l_in_channels, key_channels, value_channels, num_heads=0, dropout=0.0):
-        super(PWAM, self).__init__()
-        # input x shape: (B, H*W, dim)
-        self.vis_project = nn.Sequential(nn.Conv1d(dim, dim, 1, 1),  # the init function sets bias to 0 if bias is True
-                                         nn.GELU(),
-                                         nn.Dropout(dropout)
-                                        )
-
-        self.image_lang_att = SpatialImageLanguageAttention(v_in_channels,  # v_in
-                                                            l_in_channels,  # l_in
-                                                            key_channels,  # key
-                                                            value_channels,  # value
-                                                            out_channels=value_channels,  # out
-                                                            num_heads=num_heads)
-
-        self.project_mm = nn.Sequential(nn.Conv1d(value_channels, value_channels, 1, 1),
-                                        nn.GELU(),
-                                        nn.Dropout(dropout)
-                                        )
-
-    def forward(self, x, l, l_mask):
-        # input x shape: (B, H*W, dim)
-        vis = self.vis_project(x.permute(0, 2, 1))  # (B, dim, H*W)
-
-        lang = self.image_lang_att(x, l, l_mask)  # (B, H*W, dim)
-
-        lang = lang.permute(0, 2, 1)  # (B, dim, H*W)
-
-        mm = torch.mul(vis, lang)
-        mm = self.project_mm(mm)  # (B, dim, H*W)
-
-        mm = mm.permute(0, 2, 1)  # (B, H*W, dim)
-
-        return mm
-
-
-class SpatialImageLanguageAttention(nn.Module):
-    def __init__(self, v_in_channels, l_in_channels, key_channels, value_channels, out_channels=None, num_heads=1):
-        super(SpatialImageLanguageAttention, self).__init__()
-        # x shape: (B, H*W, v_in_channels)
-        # l input shape: (B, l_in_channels, N_l)
-        # l_mask shape: (B, N_l, 1)
-        self.v_in_channels = v_in_channels
-        self.l_in_channels = l_in_channels
-        self.out_channels = out_channels
-        self.key_channels = key_channels
-        self.value_channels = value_channels
-        self.num_heads = num_heads
-        if out_channels is None:
-            self.out_channels = self.value_channels
-
-        # Keys: language features: (B, l_in_channels, #words)
-        # avoid any form of spatial normalization because a sentence contains many padding 0s
-        self.f_key = nn.Sequential(
-            nn.Conv1d(self.l_in_channels, self.key_channels, kernel_size=1, stride=1),
-        )
-
-        # Queries: visual features: (B, H*W, v_in_channels)
-        self.f_query = nn.Sequential(
-            nn.Conv1d(self.v_in_channels, self.key_channels, kernel_size=1, stride=1),
-            nn.InstanceNorm1d(self.key_channels),
-        )
-
-        # Values: language features: (B, l_in_channels, #words)
-        self.f_value = nn.Sequential(
-            nn.Conv1d(self.l_in_channels, self.value_channels, kernel_size=1, stride=1),
-        )
-
-        # Out projection
-        self.W = nn.Sequential(
-            nn.Conv1d(self.value_channels, self.out_channels, kernel_size=1, stride=1),
-            nn.InstanceNorm1d(self.out_channels),
-        )
-
-    def forward(self, x, l, l_mask):
-        # x shape: (B, H*W, v_in_channels)
-        # l input shape: (B, l_in_channels, N_l)
-        # l_mask shape: (B, N_l, 1)
-        B, HW = x.size(0), x.size(1)
-        x = x.permute(0, 2, 1)  # (B, key_channels, H*W)
-        l_mask = l_mask.permute(0, 2, 1)  # (B, N_l, 1) -> (B, 1, N_l)
-
-        query = self.f_query(x)  # (B, key_channels, H*W) if Conv1D
-        query = query.permute(0, 2, 1)  # (B, H*W, key_channels)
-        key = self.f_key(l)  # (B, key_channels, N_l)
-        value = self.f_value(l)  # (B, self.value_channels, N_l)
-        key = key * l_mask  # (B, key_channels, N_l)
-        value = value * l_mask  # (B, self.value_channels, N_l)
-        n_l = value.size(-1)
-        query = query.reshape(B, HW, self.num_heads, self.key_channels//self.num_heads).permute(0, 2, 1, 3)
-        # (b, num_heads, H*W, self.key_channels//self.num_heads)
-        key = key.reshape(B, self.num_heads, self.key_channels//self.num_heads, n_l)
-        # (b, num_heads, self.key_channels//self.num_heads, n_l)
-        value = value.reshape(B, self.num_heads, self.value_channels//self.num_heads, n_l)
-        # # (b, num_heads, self.value_channels//self.num_heads, n_l)
-        l_mask = l_mask.unsqueeze(1)  # (b, 1, 1, n_l)
-
-        sim_map = torch.matmul(query, key)  # (B, self.num_heads, H*W, N_l)
-        sim_map = (self.key_channels ** -.5) * sim_map  # scaled dot product
-
-        sim_map = sim_map + (1e4*l_mask - 1e4)  # assign a very small number to padding positions
-        sim_map = F.softmax(sim_map, dim=-1)  # (B, num_heads, h*w, N_l)
-        out = torch.matmul(sim_map, value.permute(0, 1, 3, 2))  # (B, num_heads, H*W, self.value_channels//num_heads)
-        out = out.permute(0, 2, 1, 3).contiguous().reshape(B, HW, self.value_channels)  # (B, H*W, value_channels)
-        out = out.permute(0, 2, 1)  # (B, value_channels, HW)
-        out = self.W(out)  # (B, value_channels, HW)
-        out = out.permute(0, 2, 1)  # (B, HW, value_channels)
-
-        return out
