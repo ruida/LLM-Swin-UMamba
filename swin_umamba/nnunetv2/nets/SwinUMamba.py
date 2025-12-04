@@ -624,7 +624,7 @@ class SwinUMamba(nn.Module):
     def forward(self, x_in, report_text):
 
          # Encode text to lang_feat: shape (B, 768)
-        lang_feat = self.text_encoder(report_text, pooling = "mean")
+        lang_feat = self.text_encoder(report_text, pooling = "max")
         
         x1 = self.stem(x_in)
         vss_outs = self.vssm_encoder(x1)
