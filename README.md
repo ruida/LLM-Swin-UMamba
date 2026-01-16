@@ -67,13 +67,13 @@ ml CUDA/12.1
 conda install pytorch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 pytorch-cuda=12.1 -c pytorch -c nvidia
 
 # Step 2: core libs required by Swin-UMamba
-pip install causal-conv1d==1.1.1
+pip install causal-conv1d==1.1.1 --no-build-isolation 
 
 pip install  markdown>=2.6.8
 
 pip install protobuf!=4.24.0,>=3.19.6
 
-pip install mamba-ssm==2.2.2
+pip install mamba-ssm==2.2.2 --no-build-isolation 
 
 pip install numpy==1.26.4
 
